@@ -39,15 +39,17 @@
   
   form { 
     text-align: center;
-    padding:10px;
     border:0;
     border-radius: 5px;
     padding: 2rem;
+    height: 25rem;
     box-shadow:0 0 15px 4px rgba(0, 0, 0, 0.267);
   }
   #textInput {
-    width: 500px;
-    height: 150px;
+    width: 75%;
+    height: 20rem;
+    border-radius: 5px;
+    padding:1rem;
   }
   .submit {
     font-family: Courier New (monospace);
@@ -80,17 +82,16 @@
   {
     position: relative;
     margin: 0 auto;
-    width: 250px;
-    height: 320px;
+    width: 30rem;
+    height: 10rem;
   }
-  #card{
-    border: solid black;
+  #card{  
     position: absolute;
     margin: 0 auto;
     width: 100%;
     height: 100%;
     transform-style: preserve-3d;
-    transition: all 0.5s ease;
+    transition: all 0.7s ease;
   }
   #card:hover{
     transform: rotateY(180deg);
@@ -116,6 +117,9 @@
     font-family: Courier New (monospace);
     transform: rotateY(180deg);
   }
+  .flashcard-container{
+    margin: 30px;
+  }
 </style>
 
 <body>
@@ -130,7 +134,9 @@
 
   <left>
     <i><font color="#253a47"><h1>Simplifying Simp.lify</h1></font></i>
-    Simp.lify prioritises simplicity in all aspects of learning by breaking down course notes to the basic essentials. 
+    Simp.lify prioritises simplicity in all aspects of learning by breaking down course notes to the basic essentials. It promotes smart learning in the form of -     
+    <br>    
+    <ul><li>Note Summarization</li>    <li>Note Reorganisation</li>    <li>Flashcards</li>    <li>Mind Maps</li>    <li>Quizzes</li></ul> 
     <i><font color="#253a47"><h1>Get Started!</h1></font></i>
     
   </left>
@@ -138,67 +144,95 @@
   <form>
     <textarea type="text" placeholder="Text goes here" id="textInput"></textarea> 
     <br />
-    <button class="submit" type="button" onclick="convertToJSON()">Simp.lify</button>
+    <button class="submit" type="button" onclick="sendJSON(convertToJSON())">Simp.lify</button>
   </form>
 
-<script>
-  function convertToJSON() {
-    // Get text input value
-    var text = document.getElementById("textInput").value;
-
-    // Convert text to JSON
-    var json = JSON.parse(`{"text": "${text}"}`);
-
-    // Display JSON in <pre>
-    var jsonPretty = JSON.stringify(json, null, 2);
-    document.getElementById("receiveData").innerHTML = jsonPretty;
-  }
-</script>
-
-<script>
-  function sendJSON(json) {
-    // Send the JSON object to the API
-    fetch("https:", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(json)
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log(data);
+  <script>
+    function convertToJSON() {
+      // Get text input value
+      var text = document.getElementById("textInput").value;
+  
+      // Convert text to JSON
+      return { "text": text, "type": "QUIZ" };
+    }
+  </script>
+  
+  <script>
+    function sendJSON(json) {
+      // Send the JSON object to the API
+      fetch("http://100.67.25.40:7777/summary/", {
+        method: "POST", headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(json)
       })
-      .catch(error => {
-        console.error(error);
-      });
-  }
-</script>
-
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    }
+  </script>
+  
+<span style="padding: 2rem;"></span>
 <!-- Making Flashcards -->
 <div id="output">
   <div id="card">
-    <div id="cardFront" style="color: #000">Front of card</div>
-    <div id="cardBack">Back of card</div>
+    <div id="cardFront" style="color: #000"></div>
+    <div id="cardBack"></div>
   </div>
 </div>
-<script>
+<!-- Could not fix this  -->
+<!-- <script>
   // Put JSON into variable
   let jsonData;
 
   // Get JSON from API
   async function getJSON() {
-    const response = await fetch("https:");
+    const response = await fetch("http://100.67.25.40:7777/summary/");
     jsonData = await response.json();
+    document.getElementById("cardFront").innerHTML = jsonData.questions;
+    document.getElementById("cardBack").innerHTML = jsonData.answers;
   }
-  // Get text value from JSON
-  var text = jsonData.text;
+  getJSON();
+</script> -->
 
-  // Display text in <div>
-  document.getElementById("output").innerHTML = text;
-  document.getElementById("output").innerHTML = text.question;
-</script>
-</font>
+<!-- Questions taken from Tet Offensive  -->
+<div id="flashcard-container"></div>
+
+<script>
+  var jsonList = [
+    { "question": "What were the effects of the Tet offensive on the North Vietnamese?", "answer": "The offensive was a disaster for the North Vietnamese, losing much of their high level leadership and around 40,000 of their troops." },
+    { "question": "What was the drop in effectiveness of the USMC and the army due to?", "answer": "The drop in effectiveness of the USMC and the army was a result of the Tet offensive." },
+    { "question": "What is the Vietnam War?", "answer": "The Vietnam War was a conflict of attrition where the troops of both sides became aware of their future reality: continued sacrifice without apparent end." }
+  ];
+  
+  var flashcardContainer = document.getElementById("flashcard-container");
+
+    // Iterate over the JSON list and create flashcards for each object
+    jsonList.forEach(function(jsonObject) {
+      var flashCard = document.createElement("div");
+      flashCard.classList.add("flashcard");
+
+      // Create the front of the flashcard
+      var flashcardFront = document.createElement("div");
+      flashcardFront.classList.add("flashcard-front");
+      flashcardFront.innerHTML = jsonObject.question;
+
+      // Create the back of the flashcard
+      var flashcardBack = document.createElement("div");
+      flashcardBack.classList.add("flashcard-back");
+      flashcardBack.innerHTML = "Answer: " + jsonObject.answer;
+
+      flashCard.appendChild(flashcardFront);
+      flashCard.appendChild(flashcardBack);
+
+      flashcardContainer.appendChild(flashcard);
+    });
+  </script>
+
 </body>
 
 
