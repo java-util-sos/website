@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Team Simplify</title>
+  <title>Team Simp.lify</title>
 </head>
 
 <style>
@@ -14,29 +14,29 @@
   } */
 
   body {
-      font-family: Courier New (monospace);
-      background-color: rgb(155, 195, 184);
+    font-family: Courier New (monospace);
+    background-color: rgb(155, 195, 184);
   }
-    
+  
   header {
-      text-align: center;
-      background: #6ca196;
-      color: white;
-      font-size: 30px;
+    text-align: center;
+    background: #6ca196;
+    color: white;
+    font-size: 30px;
   }
-
+  
   #header-img {
     border: 0;
     height: 15rem;
     width: auto;
     margin-top: 1rem;
   }
-
+  
   .textarea {
-        display: flex;
-        text-align: center;
+    display: flex;
+    text-align: center;
   }
-
+  
   form { 
     text-align: center;
     padding:10px;
@@ -73,6 +73,47 @@
     outline-color: rgba(255, 255, 255, 0);
     outline-offset: 15px;
     text-shadow: 1px 1px 2px #427388; 
+    cursor: pointer;
+  }
+
+  #output
+  {
+    position: relative;
+    margin-top: 50px;
+    margin-left: 32%;
+    width: 250px;
+    height: 320px;
+  }
+  #card{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: all 0.5s ease;
+  }
+  #card:hover{
+    transform: rotateY(180deg);
+  }
+  #cardFront{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    background: white;
+    color: rgb(0, 0, 0);
+    text-align: center;
+    font-family: Courier New (monospace);
+  }
+  #cardBack{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    background: black;
+    color: rgb(252, 252, 252);
+    text-align: center;
+    font-family: Courier New (monospace);
+    transform: rotateY(180deg);
   }
 </style>
 
@@ -134,8 +175,12 @@
 </script>
 
 <!-- Making Flashcards -->
-<div id="output"></div>
-
+<div id="output">
+  <div id="card">
+    <div id="cardFront" style="color: #000">Front of card</div>
+    <div id="cardBack">Back of card</div>
+  </div>
+</div>
 <script>
   // Put JSON into variable
   let jsonData;
@@ -154,5 +199,6 @@
 </script>
 </font>
 </body>
+
 
 </html>
